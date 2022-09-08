@@ -20,7 +20,7 @@ async function parseLine(line, arr, cloneUAParser){
         arr.push([`${string}`,`${deviceType}`, `${browser}`, `${geo.country}`,`${geo.region}`])
 
     } catch (e){
-        // arr.push([`${string}`,`${result.device.type ? result.device.type : 'browser'}`, `yes`])
+        // add error handling here
     }
 }
 module.exports = {
