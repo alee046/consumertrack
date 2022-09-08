@@ -2,9 +2,9 @@
 
 ### Libraries used
 1.  geoip-lite: 3rd party service that gets its data from the maxminds API
-    csv-stringify: helper method that turns a nested structure to csv format
-    ua-parser-js: UA parsing library
-    jest: for unit testing
+2.  csv-stringify: helper method that turns a nested structure to csv format
+3.  ua-parser-js: UA parsing library
+4.  jest: for unit testing
     
 ### How to start
 1. `cd` into the project folder.
