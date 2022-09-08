@@ -1,9 +1,9 @@
-const Reader = require('./handler').Reader;
-const parseLine = require('./parseLine');
-var fs = require('fs');
-var readline = require('readline');
+let Reader = require('./handler').Reader;
+let parseLine = require('./parseLine');
+let fs = require('fs');
+let readline = require('readline');
+let mockParseLine = jest.fn();
 
-var mockParseLink = jest.fn();
 jest.mock('fs', ()=> {
   return {
     createReadStream: jest.fn(),
@@ -21,40 +21,39 @@ jest.mock('geoip-lite', () => () => ({
 }))
 
 test('it parses data using the FS Line reader and writes to a csv file', async () => {
-    // const mockedReadStream = new Readable()
-    const mReadStream = {
-        pipe: jest.fn().mockReturnThis(),
-        resume: jest.fn().mockImplementation(() => {
-          jest.fn();
-          return this;
-        }),
-      };
-      const interfaceMock = {
-        on: jest.fn().mockImplementation((event, handler) =>{
-          if(event === 'line'){
-            handler()
-            jest.fn();
-            return this;
-          }
-          if(event === 'close'){
-            handler()
-            jest.fn();
-            return this;
-          }
-        }),
+  let mockReadStream = {
+    pipe: jest.fn().mockReturnThis(),
+    resume: jest.fn().mockImplementation(() => {
+      jest.fn();
+      return this;
+    }),
+  };
+  let interfaceMock = {
+    on: jest.fn().mockImplementation((event, handler) =>{
+      if(event === 'line'){
+        handler()
+        jest.fn();
+        return this;
       }
-    let writeFileMock = jest.fn()
+      if(event === 'close'){
+        handler()
+        jest.fn();
+        return this;
+      }
+    }),
+  }
+  let writeFileMock = jest.fn()
 
-    jest.spyOn(parseLine, 'parseLine').mockImplementation(mockParseLink);
-    jest.spyOn(fs, 'createReadStream').mockReturnValue(mReadStream)
-    jest.spyOn(fs, 'writeFile').mockImplementation(writeFileMock);
-    jest.spyOn(readline, 'createInterface').mockReturnValue(interfaceMock);
+  jest.spyOn(parseLine, 'parseLine').mockImplementation(mockParseLine);
+  jest.spyOn(fs, 'createReadStream').mockReturnValue(mockReadStream)
+  jest.spyOn(fs, 'writeFile').mockImplementation(writeFileMock);
+  jest.spyOn(readline, 'createInterface').mockReturnValue(interfaceMock);
 
-    const app = new Reader('/test/path');
+  let app = new Reader('/test/path');
 
-    await app.start();
+  await app.start();
 
-    expect(mockParseLink).toHaveBeenCalled();
-    expect(writeFileMock).toHaveBeenCalled();
-    expect.assertions(2)
+  expect(mockParseLine).toHaveBeenCalled();
+  expect(writeFileMock).toHaveBeenCalled();
+  expect.assertions(2)
 });
